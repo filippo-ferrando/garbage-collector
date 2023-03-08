@@ -26,8 +26,8 @@ typedef struct sObject {
 } Object;
 
 typedef struct {
-    Object* stack[STACK_MAX];
-    int stackSize;
+    Object* stack[STACK_MAX]; //stack of objects
+    int stackSize;  //added stack size
 
     Object* firstObject;   //added pointer to first object in linked list
 
@@ -46,7 +46,7 @@ void assert(int condition, const char* message) {
 // ## START VM CODE ##
 // create and initialize VM
 
-VM* newVM() {
+VM* newVM() { //new function to create and initialize VM
     VM* vm = malloc(sizeof(VM));
     vm->stackSize = 0;
 
@@ -157,14 +157,14 @@ void gc(VM* vm){
 void ObjectPrint(Object* object){
     switch(object->type){
         case OBJ_INT:
-            printf("%d", object->value);
+            printf("%d\n", object->value);
             break;
         case OBJ_PAIR:
             printf("(");
             ObjectPrint(object->head);
             printf(", ");
             ObjectPrint(object->tail);
-            printf(")");
+            printf(")\n");
             break;
     }
 }

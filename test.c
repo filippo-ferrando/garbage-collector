@@ -58,6 +58,71 @@ void test4() {
     freeVM(vm);
 }
 
+void test5() {
+    printf("Test 5: Handle large number of objects.\n");
+    printf("Insert number of objects: ");
+    int nOb = 0;
+    scanf("%d", &nOb);
+    VM* vm = newVM();
+    for (int i = 0; i < nOb; i++) {
+        pushInt(vm, i);
+    }
+    for (int i = 0; i < nOb; i++) {
+        pop(vm);
+    }
+
+    gc(vm);
+    assert(vm->numObjects == 0, "Should have collected objects.\n");
+    freeVM(vm);
+}
+
+void test6(){
+    printf("Print objects in the list (int).\n");
+    VM* vm = newVM();
+
+    Object* object_int_1 = newObject(vm, OBJ_INT);
+    object_int_1->value = 1;
+    push(vm, object_int_1);
+
+    Object* object_int_2 = newObject(vm, OBJ_INT);
+    object_int_2->value = 2;
+    push(vm, object_int_2);
+
+    ObjectPrint(object_int_1);
+    ObjectPrint(object_int_2);
+
+    gc(vm);
+    assert(vm->numObjects == 2, "Should have preserved objects.\n");
+    freeVM(vm);
+}
+
+void test7(){
+    printf("Print objects in the list (pair).\n");
+    VM* vm = newVM();
+
+    //first int
+    Object* object_int_1 = newObject(vm, OBJ_INT);
+    object_int_1->value = 1;
+    push(vm, object_int_1);
+
+    //second int
+    Object* object_int_2 = newObject(vm, OBJ_INT);
+    object_int_2->value = 2;
+    push(vm, object_int_2);
+
+    //first pair
+    Object* object_pair_1 = newObject(vm, OBJ_PAIR);
+    object_pair_1->head = pop(vm);
+    object_pair_1->tail = pop(vm);
+    push(vm, object_pair_1);
+
+    ObjectPrint(object_pair_1);
+
+    gc(vm);
+    assert(vm->numObjects == 3, "Should have preserved objects.\n");
+    freeVM(vm);
+}
+
 void perfTest() {
     printf("Performance Test: Create lots of objects.\n");
     VM* vm = newVM();
@@ -91,6 +156,15 @@ int main(int argc, const char * argv[]) {
             test4();
             break;
         case 5:
+            test5();
+            break;
+        case 6:
+            test6();
+            break;
+        case 7:
+            test7();
+            break;
+        case 8:
             perfTest();
             break;
         default:
